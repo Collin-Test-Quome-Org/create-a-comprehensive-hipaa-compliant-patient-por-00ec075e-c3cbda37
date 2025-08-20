@@ -1,74 +1,76 @@
-import { Calendar, FileText, MessageSquare, Bell, Pill, FolderOpen } from 'lucide-react';
+import { CalendarCheck, FileText, MessageCircle, Bell, ClipboardCheck } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-const cards = [
+const features = [
   {
+    icon: <CalendarCheck className="w-8 h-8 text-blue-700" />,
     title: 'Appointments',
-    description: 'View, schedule, or manage your upcoming appointments with ease.',
-    icon: Calendar,
+    desc: 'Schedule and review your upcoming visits.',
     link: '/appointments',
-    color: 'bg-blue-100 text-blue-700',
+    id: 'dashboard-appointments-link',
   },
   {
+    icon: <FileText className="w-8 h-8 text-blue-700" />,
     title: 'Medical Records',
-    description: 'Access and upload your health records securely.',
-    icon: FileText,
+    desc: 'Access your health files anytime, anywhere.',
     link: '/medical-records',
-    color: 'bg-slate-100 text-slate-700',
+    id: 'dashboard-medical-records-link',
   },
   {
+    icon: <MessageCircle className="w-8 h-8 text-blue-700" />,
     title: 'Messaging',
-    description: 'Communicate securely with your care team.',
-    icon: MessageSquare,
+    desc: 'Communicate securely with your care team.',
     link: '/messaging',
-    color: 'bg-blue-100 text-blue-700',
+    id: 'dashboard-messaging-link',
   },
   {
-    title: 'Notifications',
-    description: 'Stay updated with timely alerts and reminders.',
-    icon: Bell,
-    link: '/notifications',
-    color: 'bg-slate-100 text-slate-700',
-  },
-  {
+    icon: <ClipboardCheck className="w-8 h-8 text-blue-700" />,
     title: 'Prescriptions',
-    description: 'Track, renew, and view your prescriptions.',
-    icon: Pill,
+    desc: 'Track and refill your medications.',
     link: '/prescriptions',
-    color: 'bg-blue-100 text-blue-700',
+    id: 'dashboard-prescriptions-link',
   },
   {
-    title: 'File Upload',
-    description: 'Add important documents to your secure vault.',
-    icon: FolderOpen,
-    link: '/file-upload',
-    color: 'bg-slate-100 text-slate-700',
+    icon: <Bell className="w-8 h-8 text-blue-700" />,
+    title: 'Notifications',
+    desc: 'Stay updated with important alerts.',
+    link: '/notifications',
+    id: 'dashboard-notifications-link',
   },
 ];
 
-export function DashboardCards() {
-  return (
-    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
-      {cards.map((card, i) => {
-        const Icon = card.icon;
-        return (
-          <motion.div
-            key={card.title}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            className={`rounded-lg shadow-lg p-6 flex flex-col gap-3 transition-all ${card.color}`}
-          >
-            <Link to={card.link} className="flex flex-col items-start gap-2">
-              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white shadow">
-                <Icon size={28} />
-              </span>
-              <h2 className="text-xl font-bold" style={{fontFamily: 'Roboto, sans-serif'}}>{card.title}</h2>
-              <p className="text-base opacity-80">{card.description}</p>
+export const DashboardCards = () => (
+  <motion.div
+    initial="hidden"
+    animate="visible"
+    variants={{
+      hidden: { opacity: 0, y: 30 },
+      visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
+    }}
+    className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-8"
+  >
+    {features.map((f, idx) => (
+      <motion.div
+        variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
+        key={f.title}
+      >
+        <Card className="hover:shadow-xl transition-all border-blue-100 group">
+          <CardHeader className="flex flex-row items-center gap-3">
+            <div className="bg-blue-50 rounded-full p-2">{f.icon}</div>
+            <CardTitle className="text-lg font-['Roboto'] text-blue-900">{f.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-slate-700 text-sm font-['Roboto']">{f.desc}</p>
+          </CardContent>
+          <CardFooter>
+            <Link to={f.link} id={f.id} className="text-blue-700 font-semibold underline underline-offset-4 group-hover:text-blue-900 transition-colors focus:outline-none">
+              Go to {f.title}
             </Link>
-          </motion.div>
-        );
-      })}
-    </div>
-  );
-}
+          </CardFooter>
+        </Card>
+      </motion.div>
+    ))}
+  </motion.div>
+);

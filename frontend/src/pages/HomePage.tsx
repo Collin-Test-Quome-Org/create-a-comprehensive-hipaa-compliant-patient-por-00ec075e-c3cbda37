@@ -1,21 +1,28 @@
 import { Hero } from '@/components/Hero';
 import { DashboardCards } from '@/components/DashboardCards';
-import { Footer } from '@/components/Footer';
+import { motion } from 'framer-motion';
 
-export function HomePage() {
-  return (
-    <div className="min-h-screen flex flex-col bg-[#f8fafc]">
-      <Hero />
-      <main className="flex-1 max-w-7xl mx-auto px-4 pb-8">
-        <section className="mt-12 text-center mb-2">
-          <h2 className="text-3xl font-bold text-[#1d4ed8] mb-2" style={{fontFamily: 'Roboto, sans-serif'}}>Your Health, Our Vault</h2>
-          <p className="text-lg text-slate-700 max-w-xl mx-auto">
-            Medivault is your personal, secure gateway to a healthier, more organized life. Designed with care for patients who value privacy and convenience.
-          </p>
-        </section>
-        <DashboardCards />
-      </main>
-      <Footer />
-    </div>
-  );
-}
+export const HomePage = () => (
+  <main>
+    <Hero />
+    <section className="max-w-6xl mx-auto px-4 py-14">
+      <motion.h2
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-3xl md:text-4xl font-bold font-['Roboto'] text-blue-900 text-center mb-8"
+      >
+        Discover the Medivault Advantage
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="text-lg text-slate-700 max-w-2xl mx-auto text-center mb-10"
+      >
+        Medivault speaks your language: clarity, confidence, and care. Our platform is designed for modern health advocates who take charge of their wellness journey. With secure access, seamless records, and compassionate support, your health data is always in your hands.
+      </motion.p>
+      <DashboardCards />
+    </section>
+  </main>
+);

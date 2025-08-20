@@ -1,79 +1,74 @@
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Mail, Send } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Lock, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const mockThreads = [
   {
-    id: 'msg-001',
-    with: 'Dr. Marquez',
-    lastMessage: 'Let me know if you need a follow-up.',
-    date: '2024-05-25',
+    id: 'thread1',
+    provider: 'Dr. Jane Smith',
+    subject: 'Lab Results Update',
+    lastMessage: 'Your CBC results are available in your portal.',
     unread: true,
   },
   {
-    id: 'msg-002',
-    with: 'Nurse Allen',
-    lastMessage: 'Lab results are now available.',
-    date: '2024-05-23',
+    id: 'thread2',
+    provider: 'Nurse Alex Jang',
+    subject: 'Prescription Refill Request',
+    lastMessage: 'Your refill has been approved. Please see your pharmacy.',
     unread: false,
   },
 ];
 
 export function Messages() {
+  const [message, setMessage] = useState('');
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="container mx-auto px-4 py-8"
-    >
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
-            <MessageCircle className="text-blue-700" />
-            Secure Messaging
-            <Lock className="ml-1 h-4 w-4 text-blue-400" />
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button id="new-message-btn" className="mb-2" onClick={() => alert('Compose message coming soon!')}>
-            <Send className="mr-1 h-4 w-4" /> New Message
-          </Button>
-          <CardDescription className="text-slate-600">Communicate privately with your healthcare team. All conversations are encrypted for your protection.</CardDescription>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto py-10 min-h-[calc(100vh-72px)]">
+      <motion.h1
+        className="text-3xl md:text-4xl font-bold text-blue-900 mb-8 font-[Roboto]"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        Secure Messaging
+      </motion.h1>
       <div className="grid md:grid-cols-2 gap-6">
-        {mockThreads.map((thread) => (
-          <motion.div
-            key={thread.id}
-            whileHover={{ scale: 1.025, boxShadow: '0 4px 18px rgba(29,78,216,0.10)' }}
-          >
-            <Card className={`relative border-blue-200 ${thread.unread ? 'ring-2 ring-blue-300' : ''}`}>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <MessageCircle className="text-blue-700" />
-                  <span className="font-semibold text-blue-900">{thread.with}</span>
-                  {thread.unread && <span className="ml-2 px-2 py-1 rounded bg-blue-100 text-blue-700 text-xs">Unread</span>}
-                </div>
-                <p className="text-xs text-slate-500 mt-1">{thread.date}</p>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-sm text-slate-600 truncate max-w-[65%]">{thread.lastMessage}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    id={`view-msg-${thread.id}`}
-                    onClick={() => alert('Thread view coming soon!')}
-                  >
-                    View
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+        <div>
+          <h2 className="text-lg font-semibold mb-2 text-slate-700 font-[Roboto]">Inbox</h2>
+          <div className="space-y-4">
+            {mockThreads.map(thread => (
+              <Card key={thread.id} className={`border ${thread.unread ? 'border-blue-400' : 'border-slate-200'} shadow-sm hover:shadow-lg rounded-lg transition cursor-pointer`}>
+                <CardHeader className="flex flex-row items-center gap-3 pb-1">
+                  <Mail className="text-blue-600 w-6 h-6" />
+                  <CardTitle className="text-base font-[Roboto] text-slate-800">{thread.subject}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xs text-slate-500">From: {thread.provider}</div>
+                  <div className="text-sm text-slate-700 mt-2">{thread.lastMessage}</div>
+                  {thread.unread && <span className="inline-block text-xs text-blue-600 mt-1 font-bold">Unread</span>}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold mb-2 text-slate-700 font-[Roboto]">New Message</h2>
+          <Card className="rounded-lg shadow">
+            <CardContent className="pt-4">
+              <form className="flex flex-col gap-3">
+                <Input id="msg-to" type="text" placeholder="To: Provider Name" className="font-[Roboto]" />
+                <Input id="msg-subject" type="text" placeholder="Subject" className="font-[Roboto]" />
+                <textarea id="msg-body" className="border rounded p-2 text-sm font-[Roboto]" rows={4} placeholder="Type your secure message here..." value={message} onChange={e => setMessage(e.target.value)} />
+                <Button id="send-message" type="submit" className="flex items-center gap-1" onClick={e => e.preventDefault()}>
+                  <Send className="w-4 h-4" /> Send
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

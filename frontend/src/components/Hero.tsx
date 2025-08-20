@@ -1,41 +1,30 @@
 import { motion } from 'framer-motion';
 
-export const Hero = () => (
-  <section className="relative w-full h-96 overflow-hidden">
-    <div
+export const Hero = () => {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="relative w-full h-96 flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url('/branding/assets/hero-0.png')" }}
-      className="absolute inset-0 bg-cover bg-center"
-    />
-    <div className="relative z-10 bg-black bg-opacity-60 h-full flex flex-col items-center justify-center">
-      <motion.h1
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="text-white text-5xl md:text-6xl font-bold font-['Roboto'] tracking-tight mb-4 text-center drop-shadow-lg"
-      >
-        Welcome to Medivault
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 0.3 }}
-        className="text-slate-100 text-lg md:text-2xl font-['Roboto'] text-center max-w-2xl mb-6"
-      >
-        Your health, your data, your control. Secure. Simple. Always available.
-      </motion.p>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, delay: 0.6 }}
-        className="flex gap-4"
-      >
-        <a href="/signup">
-          <button id="hero-signup-btn" className="px-7 py-3 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-bold shadow-lg transition-colors text-lg">Get Started</button>
-        </a>
-        <a href="/login">
-          <button id="hero-login-btn" className="px-7 py-3 rounded-lg border border-white text-white font-semibold bg-transparent hover:bg-slate-700 transition-colors text-lg">Login</button>
-        </a>
-      </motion.div>
-    </div>
-  </section>
-);
+    >
+      <div className="bg-black bg-opacity-50 h-full w-full flex flex-col items-center justify-center">
+        <h1 className="text-white text-4xl md:text-6xl font-bold mb-4 tracking-tight font-['Roboto']" style={{fontWeight: 700}}>
+          Welcome to CareSecure
+        </h1>
+        <p className="text-white text-lg md:text-2xl mb-8 max-w-xl text-center font-['Roboto']">
+          Empowering your health journey with secure, seamless access to medical records, appointments, and more.
+        </p>
+        <div className="flex gap-4">
+          <a href="/signup" id="hero-signup-btn" className="inline-block bg-[#1d4ed8] hover:bg-[#2563eb] text-white px-6 py-3 rounded-md text-lg font-semibold shadow-lg transition">
+            Get Started
+          </a>
+          <a href="/login" id="hero-login-btn" className="inline-block bg-white hover:bg-[#f1f5f9] text-[#1d4ed8] px-6 py-3 rounded-md text-lg font-semibold shadow-lg border border-[#1d4ed8] transition">
+            Login
+          </a>
+        </div>
+      </div>
+    </motion.section>
+  );
+};

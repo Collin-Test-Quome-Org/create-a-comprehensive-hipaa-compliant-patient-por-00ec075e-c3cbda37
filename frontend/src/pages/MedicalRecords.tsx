@@ -1,72 +1,89 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { ShieldCheck, FileText } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const mockRecords = [
   {
     id: 'rec-1',
-    type: 'Lab Results',
-    date: '2024-06-08',
-    summary: 'Blood test - all values normal',
+    title: 'Annual Physical - 2024',
+    date: '2024-04-02',
+    type: 'Visit Summary',
+    provider: 'Dr. Lisa Nguyen',
     encrypted: true,
+    downloadUrl: '#',
   },
   {
     id: 'rec-2',
-    type: 'Visit Note',
-    date: '2024-05-30',
-    summary: 'Annual wellness checkup',
+    title: 'Lab Results - CBC',
+    date: '2024-03-15',
+    type: 'Lab Result',
+    provider: 'CareShield Lab',
     encrypted: true,
+    downloadUrl: '#',
   },
   {
     id: 'rec-3',
-    type: 'Imaging',
-    date: '2024-04-21',
-    summary: 'Chest X-ray - no abnormalities',
+    title: 'Specialist Referral',
+    date: '2024-01-22',
+    type: 'Referral',
+    provider: 'Dr. Mark Evans',
     encrypted: true,
+    downloadUrl: '#',
   },
 ];
 
 export function MedicalRecords() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  setTimeout(() => setIsLoaded(true), 200);
-
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 24 }}
-      animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-      className="container mx-auto px-4 py-12 min-h-[calc(100vh-80px)]"
-    >
-      <div className="flex items-center gap-3 mb-4">
-        <FileText className="text-blue-700" />
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900" style={{ fontFamily: 'Roboto, sans-serif' }}>
-          Medical Records
-        </h1>
-      </div>
-      <p className="text-slate-600 mb-8" style={{ fontFamily: 'Roboto, sans-serif' }}>
-        Your health documents are stored with end-to-end encryption. Only you and your care team have access.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="container mx-auto px-4 py-10 min-h-[calc(100vh-64px)] bg-white">
+      <motion.h1
+        className="text-2xl md:text-3xl font-bold text-blue-900 mb-6"
+        style={{ fontFamily: 'Roboto, sans-serif' }}
+        initial={{ opacity: 0, y: -32 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        Medical Records
+      </motion.h1>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, y: 32 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        transition={{ staggerChildren: 0.1 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
         {mockRecords.map((rec) => (
-          <Card key={rec.id} className="hover:shadow-lg transition-shadow group">
-            <CardHeader className="flex flex-row justify-between items-center">
-              <CardTitle className="text-blue-900 flex gap-2 items-center">
-                {rec.type}
-                {rec.encrypted && <ShieldCheck className="text-green-700 w-4 h-4 ml-1" />}
-              </CardTitle>
-              <span className="text-xs text-slate-400">{rec.date}</span>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-3 text-slate-700">{rec.summary}</p>
-              <Button asChild id={`record-view-${rec.id}`} variant="outline" className="w-full group-hover:bg-blue-50">
-                <Link to={`/medical-records/${rec.id}`}>View Details</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <motion.div key={rec.id} variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0 } }}>
+            <Card className="border-blue-100 hover:border-blue-700 transition-all h-full">
+              <CardHeader className="flex flex-row items-center gap-3 pb-2">
+                <span className="rounded-full p-2 bg-blue-50 text-blue-700">
+                  <FileText />
+                </span>
+                <CardTitle className="text-blue-800 text-lg">{rec.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2">
+                <div className="text-slate-700 text-sm">Type: {rec.type}</div>
+                <div className="text-slate-600 text-sm">Provider: {rec.provider}</div>
+                <div className="text-slate-400 text-xs">Date: {rec.date}</div>
+                {rec.encrypted && (
+                  <div className="text-xs text-green-600 font-semibold flex items-center gap-1 mt-1">
+                    <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                    Encrypted
+                  </div>
+                )}
+                <Button variant="outline" size="sm" id={`download-record-${rec.id}`} className="mt-2 w-fit" asChild>
+                  <a href={rec.downloadUrl} download>
+                    <Download size={16} className="mr-1" /> Download
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
-      </div>
-    </motion.section>
+      </motion.div>
+    </div>
   );
 }

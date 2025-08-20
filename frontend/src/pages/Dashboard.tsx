@@ -1,109 +1,74 @@
+import { DashboardCard } from '@/components/DashboardCard';
+import { RecentMessages } from '@/components/RecentMessages';
+import { Calendar, FileText, Stethoscope, ShieldCheck, MessageCircle, Bell, FileUp } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { Bell, Calendar, FolderOpen, MessageSquare, Pill } from 'lucide-react';
-
-const mockCounts = {
-  appointments: 2,
-  records: 12,
-  prescriptions: 3,
-  messages: 5,
-  notifications: 2,
-};
 
 export function Dashboard() {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => setIsLoaded(true), 250);
-  }, []);
-
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 24 }}
-      animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-      className="container mx-auto px-4 py-12 min-h-[calc(100vh-80px)] flex flex-col"
-    >
-      <h1 className="text-3xl md:text-4xl font-bold text-blue-900 mb-2" style={{ fontFamily: 'Roboto, sans-serif' }}>
-        Welcome to Your Secure CareShield Portal
-      </h1>
-      <p className="text-lg text-slate-600 mb-8" style={{ fontFamily: 'Roboto, sans-serif' }}>
-        At CareShield, we put trust and ease at the heart of your healthcare experience. Manage records, appointments, prescriptions, and conversations with your care team—all in one HIPAA-compliant space.
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-        <motion.div whileHover={{ scale: 1.03 }}>
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center gap-2">
-              <Calendar className="text-blue-700" />
-              <CardTitle className="text-blue-900">Appointments</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="font-bold text-2xl mb-2 text-blue-900">{mockCounts.appointments}</div>
-              <Button asChild id="dashboard-appts-btn" variant="outline" className="w-full">
-                <Link to="/appointments">Manage</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.03 }}>
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center gap-2">
-              <FolderOpen className="text-blue-700" />
-              <CardTitle className="text-blue-900">Records</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="font-bold text-2xl mb-2 text-blue-900">{mockCounts.records}</div>
-              <Button asChild id="dashboard-records-btn" variant="outline" className="w-full">
-                <Link to="/medical-records">View</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.03 }}>
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center gap-2">
-              <Pill className="text-blue-700" />
-              <CardTitle className="text-blue-900">Prescriptions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="font-bold text-2xl mb-2 text-blue-900">{mockCounts.prescriptions}</div>
-              <Button asChild id="dashboard-rx-btn" variant="outline" className="w-full">
-                <Link to="/prescriptions">Manage</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.03 }}>
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center gap-2">
-              <MessageSquare className="text-blue-700" />
-              <CardTitle className="text-blue-900">Messages</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="font-bold text-2xl mb-2 text-blue-900">{mockCounts.messages}</div>
-              <Button asChild id="dashboard-msg-btn" variant="outline" className="w-full">
-                <Link to="/messages">Inbox</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.03 }}>
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center gap-2">
-              <Bell className="text-blue-700" />
-              <CardTitle className="text-blue-900">Notifications</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="font-bold text-2xl mb-2 text-blue-900">{mockCounts.notifications}</div>
-              <Button asChild id="dashboard-notif-btn" variant="outline" className="w-full">
-                <Link to="/notifications">View</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-    </motion.section>
+    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-blue-50 to-slate-50">
+      <motion.header
+        initial={{ opacity: 0, y: -32 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="container mx-auto px-4 py-10"
+      >
+        <h1
+          className="text-3xl md:text-4xl font-bold text-blue-900 mb-2"
+          style={{ fontFamily: 'Roboto, sans-serif' }}
+        >
+          Welcome to your CareShield Portal
+        </h1>
+        <p className="text-lg md:text-xl text-slate-600 max-w-2xl">
+          Securely manage your health—medical records, appointments, prescriptions, and more—all in one place.
+        </p>
+      </motion.header>
+      <section className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <DashboardCard
+          id="dashboard-medical-records"
+          title="Medical Records"
+          description="Access and review your health history and lab results."
+          to="/medical-records"
+          icon={<FileText size={26} />}
+        />
+        <DashboardCard
+          id="dashboard-appointments"
+          title="Appointments"
+          description="View, schedule, or manage your appointments."
+          to="/appointments"
+          icon={<Calendar size={26} />}
+        />
+        <DashboardCard
+          id="dashboard-prescriptions"
+          title="Prescriptions"
+          description="Refill and view your active and past prescriptions."
+          to="/prescriptions"
+          icon={<Stethoscope size={26} />}
+        />
+        <DashboardCard
+          id="dashboard-messages"
+          title="Messages"
+          description="Communicate securely with your care team."
+          to="/messages"
+          icon={<MessageCircle size={26} />}
+        />
+        <DashboardCard
+          id="dashboard-uploads"
+          title="Documents & Uploads"
+          description="View and upload your medical documents."
+          to="/documents"
+          icon={<FileUp size={26} />}
+        />
+        <DashboardCard
+          id="dashboard-notifications"
+          title="Notifications"
+          description="Stay updated on appointments and lab results."
+          to="/notifications"
+          icon={<Bell size={26} />}
+        />
+      </section>
+      <section className="container mx-auto px-4 max-w-xl mb-12">
+        <RecentMessages />
+      </section>
+    </div>
   );
 }

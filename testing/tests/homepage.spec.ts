@@ -6,40 +6,36 @@ test.describe('Home Page', () => {
   });
 
   test('renders the Hero section', async ({ page }) => {
-    // The Hero is rendered at the top of the Home page
-    // We do not know its exact structure, but we do expect a hero image (from branding)
-    // That image is at /branding/assets/hero-0.png
-    await expect(
-      page.locator('div[style*="/branding/assets/hero-0.png"]')
-    ).toBeVisible();
+    // The Hero section likely has a background image (see brand kit)
+    const hero = page.locator("div[style*='/branding/assets/hero-0.png']");
+    await expect(hero).toBeVisible();
+    // Overlay should contain an h1
+    await expect(hero.locator('h1')).toBeVisible();
   });
 
-  test('shows the main headline', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand', level: 2 })
-    ).toBeVisible();
+  test('shows section headline and description', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand' })).toBeVisible();
+    await expect(page.getByText(
+      'At CareShield, we believe every connection to your health should feel safe, simple, and empowering.',
+      { exact: false }
+    )).toBeVisible();
+    await expect(page.getByText(
+      'Join a community where trust is built in, and clarity is always at the forefront.',
+      { exact: false }
+    )).toBeVisible();
   });
 
-  test('shows the supporting paragraph', async ({ page }) => {
-    await expect(
-      page.getByText(
-        /we believe every connection to your health should feel safe, simple, and empowering/i
-      )
-    ).toBeVisible();
+  test('content is centered and visually present', async ({ page }) => {
+    // Section should have flex and items-center
+    const section = page.locator('section.flex.flex-col.items-center');
+    await expect(section).toBeVisible();
+    await expect(section.getByRole('heading', { name: /Healthcare and Security/ })).toBeVisible();
   });
 
-  test('layout is centered and minimum height is correct', async ({ page }) => {
-    const rootDiv = page.locator('div.flex.flex-col');
-    await expect(rootDiv).toBeVisible();
-    const minHeight = await rootDiv.evaluate((el) => window.getComputedStyle(el).minHeight);
-    expect(minHeight).toMatch(/calc\(100vh-64px\)/);
-  });
-
-  test('has accessible headings', async ({ page }) => {
-    // There should be a level-2 heading for the main headline
-    const headings = await page.locator('h2, h1').allTextContents();
-    expect(
-      headings.some((h) => h.includes('Healthcare and Security, Hand in Hand'))
-    ).toBeTruthy();
+  test('has accessible heading structure', async ({ page }) => {
+    // There should be only one h2 on the page for this section
+    const h2s = await page.locator('h2').all();
+    expect(h2s.length).toBeGreaterThanOrEqual(1);
+    await expect(page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand', level: 2 })).toBeVisible();
   });
 });

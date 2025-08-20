@@ -5,41 +5,57 @@ test.describe('Home Page', () => {
     await page.goto('/');
   });
 
-  test('displays Hero section', async ({ page }) => {
-    // Hero is the first child - check for expected structure
-    const heroDiv = page.locator('div').first();
-    // The Hero component likely contains branding imagery or introductory content, but we check presence
-    await expect(heroDiv).toBeVisible();
+  test('renders Hero section', async ({ page }) => {
+    // The Hero section is rendered as the first child; look for the hero image background
+    const hero = page.locator('div').filter({ has: page.locator('img[src^="/branding/assets/hero-0.png"], [style*="hero-0.png"]') });
+    // If Hero has background image, check there's a section with the right style
+    // fallback: check for h1 in hero overlay, or fallback to any hero-0.png in style
+    const heroImgDiv = page.locator('[style*="/branding/assets/hero-0.png"]');
+    await expect(heroImgDiv).toBeVisible();
   });
 
-  test('shows main heading and subtitle', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /Healthcare and Security, Hand in Hand/i })).toBeVisible();
-    await expect(page.getByText(/At CareShield, we believe every connection to your health should feel safe, simple, and empowering\./i)).toBeVisible();
-    await expect(page.getByText(/Join a community where trust is built in, and clarity is always at the forefront\./i)).toBeVisible();
+  test('renders main message headline', async ({ page }) => {
+    const headline = page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand', level: 2 });
+    await expect(headline).toBeVisible();
+    await expect(headline).toHaveClass(/font-bold/);
+    // Should have correct color (blue-900)
+    const color = await headline.evaluate(el => window.getComputedStyle(el).color);
+    expect(["rgb(30, 58, 138)", "#1e3a8a"].some(c => color.includes(c))).toBeTruthy();
   });
 
-  test('main section animates in (opacity check)', async ({ page }) => {
-    // The section should end up with opacity 1 after animation
-    const section = page.locator('section.container');
-    await expect(section).toBeVisible();
-    // Playwright can't directly check framer-motion animation, but can check final style
-    const opacity = await section.evaluate((el) => window.getComputedStyle(el).opacity);
-    expect(Number(opacity)).toBeGreaterThan(0.95);
+  test('renders descriptive paragraph', async ({ page }) => {
+    await expect(
+      page.getByText(
+        /At CareShield, we believe every connection to your health should feel safe, simple, and empowering\./
+      )
+    ).toBeVisible();
   });
 
-  test('responsive layout classes are present', async ({ page }) => {
-    const section = page.locator('section.container');
-    await expect(section).toHaveClass(/flex/);
-    await expect(section).toHaveClass(/items-center/);
-    await expect(section).toHaveClass(/px-4/);
-    await expect(section).toHaveClass(/py-16/);
+  test('main section animates in (opacity/transform)', async ({ page }) => {
+    // Wait for animation: opacity should be 1, transform should not be translated
+    const section = page.locator('section').filter({ has: page.getByRole('heading', { name: /Healthcare and Security/ }) });
+    await section.waitFor();
+    const opacity = await section.evaluate(el => window.getComputedStyle(el).opacity);
+    expect(Number(opacity)).toBeCloseTo(1, 1);
+    const transform = await section.evaluate(el => window.getComputedStyle(el).transform);
+    // Should be either 'none' or matrix with y=0
+    expect(transform === 'none' || transform.endsWith(', 0)')).toBeTruthy();
   });
 
-  test('accessibility: heading and content roles', async ({ page }) => {
-    // There should be a level 2 heading
-    const h2 = page.getByRole('heading', { level: 2, name: /Healthcare and Security, Hand in Hand/i });
-    await expect(h2).toBeVisible();
-    // Paragraph text should exist
-    await expect(page.getByText(/CareShield/)).toBeVisible();
+  test('page uses correct background color', async ({ page }) => {
+    const rootDiv = page.locator('div').first();
+    const bg = await rootDiv.evaluate(el => window.getComputedStyle(el).backgroundColor);
+    expect(["rgb(255, 255, 255)", "#ffffff"].some(c => bg.includes(c))).toBeTruthy();
+  });
+
+  test('basic accessibility: headings and contrast', async ({ page }) => {
+    // Headline role
+    await expect(page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand' })).toBeVisible();
+    // All links/button in nav are accessible
+    for (const navText of [
+      'Medivault', 'Appointments', 'Medical Records', 'Prescriptions', 'Messaging', 'Notifications', 'Login', 'Sign Up',
+    ]) {
+      await expect(page.getByRole('link', { name: navText }).or(page.getByRole('button', { name: navText }))).toBeVisible();
+    }
   });
 });

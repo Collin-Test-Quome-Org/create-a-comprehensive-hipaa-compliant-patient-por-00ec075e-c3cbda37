@@ -1,74 +1,84 @@
-import { Pill, Repeat2, CheckCircle2 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Pill, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const mockPrescriptions = [
   {
     id: 'rx1',
     name: 'Atorvastatin 20mg',
-    provider: 'Dr. Jane Smith',
-    lastFilled: '2024-05-01',
-    refills: 2,
+    provider: 'Dr. Samantha Grey',
+    filled: '2024-05-12',
     status: 'Active',
   },
   {
     id: 'rx2',
     name: 'Lisinopril 10mg',
-    provider: 'Dr. Alex Jang',
-    lastFilled: '2024-04-20',
-    refills: 0,
-    status: 'Needs Refill',
+    provider: 'Dr. Alan White',
+    filled: '2024-04-25',
+    status: 'Active',
+  },
+  {
+    id: 'rx3',
+    name: 'Metformin 500mg',
+    provider: 'Dr. Samantha Grey',
+    filled: '2024-04-10',
+    status: 'Complete',
   },
 ];
 
 export function Prescriptions() {
   return (
-    <div className="container mx-auto py-10 min-h-[calc(100vh-72px)]">
-      <motion.h1
-        className="text-3xl md:text-4xl font-bold text-blue-900 mb-8 font-[Roboto]"
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        Your Prescriptions
-      </motion.h1>
-      <div className="grid md:grid-cols-2 gap-6 max-w-3xl">
+    <motion.div
+      className="container mx-auto px-4 py-12"
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="mb-8 bg-blue-50 border-blue-100">
+        <CardHeader className="flex flex-row items-center gap-2">
+          <Pill className="text-blue-700 h-7 w-7" />
+          <CardTitle className="text-2xl font-bold text-blue-900" style={{ fontFamily: 'Roboto, sans-serif' }}>
+            Prescriptions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-slate-700 mb-2" style={{ fontFamily: 'Roboto, sans-serif' }}>
+            Manage and refill your active prescriptions.
+          </p>
+        </CardContent>
+      </Card>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
         {mockPrescriptions.map(rx => (
           <motion.div
             key={rx.id}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            transition={{ delay: 0.1 * Number(rx.id.replace(/\D/g, '')), duration: 0.4 }}
           >
-            <Card className="rounded-xl border border-slate-100 shadow-md hover:shadow-lg transition">
-              <CardHeader className="flex flex-row items-center gap-3 pb-2">
-                <Pill className="text-blue-600 w-7 h-7" />
-                <CardTitle className="font-[Roboto] text-lg text-slate-800">{rx.name}</CardTitle>
+            <Card className="border-blue-100 bg-white shadow-sm group transition-transform hover:scale-[1.025]">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <Pill className="text-blue-500 h-6 w-6" />
+                <div>
+                  <CardTitle className="text-blue-900 font-semibold text-lg" style={{ fontFamily: 'Roboto, sans-serif' }}>{rx.name}</CardTitle>
+                  <div className="text-sm text-slate-500">{rx.provider}</div>
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-sm text-slate-500 mb-1">Prescribed by: {rx.provider}</div>
-                <div className="text-sm text-slate-500 mb-1">Last Filled: {rx.lastFilled}</div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Repeat2 className="w-4 h-4 text-blue-400" />
-                  <span className="text-xs text-blue-600">{rx.refills} refills left</span>
-                </div>
-                <div className="flex items-center gap-2 mb-4">
-                  <CheckCircle2 className={`w-4 h-4 ${rx.status === 'Active' ? 'text-green-500' : 'text-yellow-500'}`} />
-                  <span className={`text-xs ${rx.status === 'Active' ? 'text-green-600' : 'text-yellow-600'}`}>{rx.status}</span>
-                </div>
-                <Button
-                  id={`request-refill-${rx.id}`}
-                  variant="outline"
-                  className="w-full"
-                  disabled={rx.refills === 0 && rx.status === 'Needs Refill' ? false : true}
-                >
-                  Request Refill
-                </Button>
+              <CardContent className="flex items-center justify-between mt-2">
+                <span className="text-xs text-slate-400">Filled: {rx.filled}</span>
+                {rx.status === 'Active' && (
+                  <Button id={`refill-${rx.id}`} variant="outline" size="icon">
+                    <RefreshCw className="h-5 w-5 text-green-600" />
+                  </Button>
+                )}
+                {rx.status === 'Complete' && (
+                  <span className="text-xs text-slate-300 italic">Complete</span>
+                )}
               </CardContent>
             </Card>
           </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

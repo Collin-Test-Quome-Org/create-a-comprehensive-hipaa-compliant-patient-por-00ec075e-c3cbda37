@@ -1,27 +1,22 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Skeleton } from '@/components/ui/skeleton'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Navigation } from './Navigation';
+import { Home } from '@/pages/Home';
+import { About } from '@/pages/About';
+import { Login } from '@/pages/Login';
+import { Signup } from '@/pages/Signup';
 
 export function App() {
   return (
     <Router>
+      <Navigation />
       <Routes>
-        <Route path="/" element={
-          <div className="text-center mx-auto my-10 w-screen">
-            <h1>We are building your app...</h1>
-            <p className="read-the-docs mx-auto">
-              <div className="my-8 items-center flex flex-col space-y-3 animate-pulse">
-                <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
-                </div>
-              </div>
-              Just a moment. You should see updates shortly.
-            </p>
-          </div>
-        } />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </Router>
-  )
+  );
 }
-export default App
+
+export default App;

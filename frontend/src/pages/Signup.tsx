@@ -1,30 +1,44 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 export function Signup() {
   return (
-    <div className="flex min-h-[80vh] items-center justify-center bg-gradient-to-b from-slate-50 via-white to-blue-50 py-12">
-      <motion.div initial={{ opacity: 0, scale: 0.93 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}>
-        <Card className="shadow-xl w-[340px]">
+    <div className="flex flex-col min-h-[calc(100vh-64px)] items-center justify-center bg-gradient-to-b from-blue-50 to-white">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Card className="shadow-lg w-[370px] mx-auto">
           <CardHeader>
-            <CardTitle className="text-blue-900 text-2xl" style={{ fontFamily: 'Roboto, sans-serif' }}>Join CareShield</CardTitle>
+            <CardTitle className="text-2xl font-bold text-blue-900" style={{ fontFamily: 'Roboto, sans-serif' }}>
+              Create Your CareShield Account
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="flex flex-col gap-4">
-              <label htmlFor="signup-email" className="text-slate-700 text-sm font-medium">Email</label>
-              <Input id="signup-email" type="email" required placeholder="you@email.com" className="mb-2" />
-              <label htmlFor="signup-password" className="text-slate-700 text-sm font-medium">Password</label>
-              <Input id="signup-password" type="password" required placeholder="••••••••" className="mb-2" />
-              <label htmlFor="signup-confirm" className="text-slate-700 text-sm font-medium">Confirm Password</label>
-              <Input id="signup-confirm" type="password" required placeholder="••••••••" className="mb-4" />
-              <Button id="signup-btn" type="submit" className="bg-blue-700 hover:bg-blue-900 text-white font-bold w-full">Sign Up</Button>
-              <span className="text-xs text-slate-500 text-center mt-2">
-                Already have an account? <Link to="/login" className="text-blue-700 hover:underline">Log in</Link>
-              </span>
+            <form className="space-y-4" autoComplete="off">
+              <div>
+                <Input id="signup-name" type="text" placeholder="Full Name" className="font-roboto" required />
+              </div>
+              <div>
+                <Input id="signup-email" type="email" placeholder="Email address" className="font-roboto" required />
+              </div>
+              <div>
+                <Input id="signup-password" type="password" placeholder="Password" className="font-roboto" required />
+              </div>
+              <Button id="signup-submit" type="submit" className="w-full bg-blue-700 hover:bg-blue-900 text-white font-bold">
+                Sign Up
+              </Button>
             </form>
+            <div className="flex justify-between mt-4 text-sm">
+              <span className="text-slate-500">Already have an account?</span>
+              <Link to="/login" id="login-link" className="text-blue-700 hover:underline">
+                Sign in
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </motion.div>

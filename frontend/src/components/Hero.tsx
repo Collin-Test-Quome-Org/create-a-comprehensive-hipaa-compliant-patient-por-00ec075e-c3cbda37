@@ -1,33 +1,38 @@
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
+const heroVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1 } },
+};
 
 export function Hero() {
   return (
-    <section className="relative h-[32rem] flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('/branding/assets/hero-0.png')" }}>
-      <div className="absolute inset-0 bg-black bg-opacity-50 z-10" />
-      <motion.div 
-        className="relative z-20 text-center flex flex-col items-center"
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <h1 className="text-white text-5xl font-bold font-['Roboto'] mb-6 drop-shadow-xl">
-          Welcome to SecureBridge Health
-        </h1>
-        <p className="text-slate-200 text-lg max-w-xl mx-auto mb-8 font-['Roboto']">
-          The gateway to your health, securely connected. Manage appointments, records, prescriptions, and more—all with confidence and care.
+    <motion.section
+      className="relative w-full h-[28rem] flex items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: "url('/branding/assets/hero-0.png')" }}
+      initial="hidden"
+      animate="visible"
+      variants={heroVariants}
+    >
+      <div className="absolute inset-0 bg-black bg-opacity-50" />
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-white text-5xl font-bold mb-4" style={{fontFamily: 'Roboto, sans-serif'}}>Welcome to Medivault</h1>
+        <p className="text-white text-lg mb-6 max-w-xl" style={{fontFamily: 'Roboto, sans-serif'}}>
+          Securely manage your health information, appointments, and communications—all in one modern, trusted space.
         </p>
         <div className="flex gap-4">
-          <Button asChild id="get-started-cta" className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 text-lg font-bold">
-            <Link to="/signup" className="flex items-center gap-2">Get Started <ArrowRight className="w-5 h-5" /></Link>
-          </Button>
-          <Button asChild variant="outline" id="learn-more-cta" className="text-white border-white border-2 px-8 py-3 text-lg font-bold bg-transparent hover:bg-slate-700/30">
-            <Link to="/login">Login</Link>
-          </Button>
+          <a href="/signup">
+            <button id="hero-cta-signup" className="bg-[#1d4ed8] hover:bg-blue-700 text-white font-bold py-3 px-6 rounded shadow-lg transition-all">
+              Get Started
+            </button>
+          </a>
+          <a href="/login">
+            <button id="hero-cta-login" className="bg-white text-[#1d4ed8] hover:bg-blue-100 font-bold py-3 px-6 rounded shadow-lg transition-all">
+              Login
+            </button>
+          </a>
         </div>
-      </motion.div>
-    </section>
+      </div>
+    </motion.section>
   );
 }

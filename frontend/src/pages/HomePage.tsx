@@ -1,26 +1,21 @@
 import { Hero } from '@/components/Hero';
-import { FeatureCards } from '@/components/FeatureCards';
-import { motion } from 'framer-motion';
+import { DashboardCards } from '@/components/DashboardCards';
+import { Footer } from '@/components/Footer';
 
 export function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#f8fafc]">
       <Hero />
-      <FeatureCards />
-      <motion.section 
-        className="max-w-3xl mx-auto text-center my-20 px-4"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-      >
-        <h2 className="text-3xl font-bold font-['Roboto'] text-blue-900 mb-4">Why SecureBridge Health?</h2>
-        <p className="text-lg text-slate-700 mb-8 font-['Roboto']">
-          At SecureBridge Health, we believe that health belongs in your hands—but protected by ours. 
-          Peace of mind meets powerful health management with our secure, caring, and friendly platform. 
-          Because you deserve clarity, confidence, and connection every step of your journey.
-        </p>
-      </motion.section>
-    </main>
+      <main className="flex-1 max-w-7xl mx-auto px-4 pb-8">
+        <section className="mt-12 text-center mb-2">
+          <h2 className="text-3xl font-bold text-[#1d4ed8] mb-2" style={{fontFamily: 'Roboto, sans-serif'}}>Your Health, Our Vault</h2>
+          <p className="text-lg text-slate-700 max-w-xl mx-auto">
+            Medivault is your personal, secure gateway to a healthier, more organized life. Designed with care for patients who value privacy and convenience.
+          </p>
+        </section>
+        <DashboardCards />
+      </main>
+      <Footer />
+    </div>
   );
 }

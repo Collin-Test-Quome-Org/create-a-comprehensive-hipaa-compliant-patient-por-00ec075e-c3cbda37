@@ -1,55 +1,35 @@
-import { Hero } from '@/components/Hero'
-import { DashboardCard } from '@/components/DashboardCard'
-import { RecentMessages } from '@/components/RecentMessages'
-import { CalendarCheck, FileText, ClipboardCheck, MessageCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
+import { Hero } from '@/components/Hero';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
-export function HomePage() {
-  // Example mock stats
-  const stats = [
-    {
-      icon: <CalendarCheck className="w-8 h-8" />, title: 'Appointments', count: 3, description: 'Upcoming visits scheduled', link: '/appointments'
-    },
-    {
-      icon: <FileText className="w-8 h-8" />, title: 'Medical Records', count: 12, description: 'Records securely stored', link: '/medical-records'
-    },
-    {
-      icon: <ClipboardCheck className="w-8 h-8" />, title: 'Prescriptions', count: 2, description: 'Active medications', link: '/prescriptions'
-    },
-    {
-      icon: <MessageCircle className="w-8 h-8" />, title: 'Messages', count: 5, description: 'Unread messages', link: '/messaging'
-    },
-  ]
-
-  return (
-    <main className="min-h-screen bg-slate-50">
-      <Hero />
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <motion.h2 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="font-['Roboto'] text-3xl md:text-4xl font-bold mb-8 text-primary">
-          Welcome back to Medishield Portal
-        </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {stats.map((stat, idx) => (
-            <Link to={stat.link} key={stat.title} className="block focus:outline-none">
-              <DashboardCard {...stat} />
-            </Link>
-          ))}
+export const HomePage = () => (
+  <main>
+    <Hero />
+    <section className="max-w-5xl mx-auto px-4 py-16">
+      <motion.div
+        className="flex flex-col md:flex-row items-center gap-12"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        <img src="/branding/assets/logo-1.png" className="h-32 w-32 rounded-full shadow-xl border-4 border-blue-200" />
+        <div className="flex-1">
+          <h2 className="text-3xl font-bold text-blue-900 mb-3" style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 700 }}>
+            Why SentinelHealth?
+          </h2>
+          <ul className="text-slate-700 text-lg mb-6 pl-4 list-disc" style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 400 }}>
+            <li>Bank-grade security for your sensitive medical data</li>
+            <li>Instant access to appointments, prescriptions, and records</li>
+            <li>Seamless communication with your care team</li>
+            <li>Modern, friendly, and always available for you</li>
+          </ul>
+          <Button asChild id="homepage-cta" className="bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow hover:bg-blue-800">
+            <Link to="/signup">Join SentinelHealth Now</Link>
+          </Button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-          <RecentMessages />
-          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="bg-primary/5 rounded-lg p-8 shadow-md flex flex-col items-center justify-center">
-            <h3 className="text-xl font-bold mb-2 text-primary">"Your Health, Our Priority."</h3>
-            <p className="text-slate-700 mb-6 text-center">At Medishield Portal, we believe in empowering you with tools to take charge of your health journey—securely, simply, and on your terms.</p>
-            <Button asChild id="explore-medical-records" className="bg-primary">
-              <Link to="/medical-records">
-                Explore Your Medical Records
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-    </main>
-  )
-}
+      </motion.div>
+    </section>
+  </main>
+);

@@ -1,75 +1,97 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Capsule, RefreshCcw } from 'lucide-react';
-import { useState } from 'react';
+import { Pill, RefreshCcw, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const mockPrescriptions = [
   {
-    id: 'rx-1',
+    id: 'rx-001',
     name: 'Atorvastatin 10mg',
-    instructions: 'Take 1 tablet daily',
-    status: 'Active',
-    refills: 2,
-    lastFilled: '2024-05-14',
+    provider: 'Dr. Sarah Lin',
+    dateIssued: '2024-04-18',
+    status: 'active',
+    refillsLeft: 2,
   },
   {
-    id: 'rx-2',
+    id: 'rx-002',
     name: 'Lisinopril 20mg',
-    instructions: 'Take 1 tablet in the morning',
-    status: 'Active',
-    refills: 0,
-    lastFilled: '2024-05-02',
+    provider: 'Dr. Sarah Lin',
+    dateIssued: '2024-01-15',
+    status: 'expired',
+    refillsLeft: 0,
+  },
+  {
+    id: 'rx-003',
+    name: 'Albuterol Inhaler',
+    provider: 'Dr. Mark Johnson',
+    dateIssued: '2024-02-10',
+    status: 'active',
+    refillsLeft: 1,
   },
 ];
 
 export function Prescriptions() {
-  const [prescriptions] = useState(mockPrescriptions);
-
   return (
-    <div className="container mx-auto py-10">
-      <Card className="mb-8 shadow-md">
-        <CardHeader>
-          <CardTitle className="font-roboto font-bold text-2xl text-blue-900">Prescriptions</CardTitle>
-          <CardDescription>
-            Track your active prescriptions and request refills securely.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-4">
-            {prescriptions.length === 0 && (
-              <div className="text-slate-500">No prescriptions found.</div>
-            )}
-            {prescriptions.map(rx => (
-              <Card key={rx.id} className="flex flex-col md:flex-row items-center gap-4 p-4 bg-slate-50 border-blue-100">
-                <div className="flex-shrink-0 bg-blue-100 p-3 rounded-full">
-                  <Capsule className="text-blue-700" size={32} />
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 py-12 min-h-[calc(100vh-128px)]"
+    >
+      <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-blue-900" style={{ fontFamily: 'Roboto, sans-serif' }}>
+            My Prescriptions
+          </h1>
+          <p className="text-slate-600 mt-2" style={{ fontFamily: 'Roboto, sans-serif' }}>
+            View your active and past prescriptions. Request refills securely.
+          </p>
+        </div>
+        <Button id="request-refill" variant="default" disabled className="flex gap-2 cursor-not-allowed" title="Demo: New refill requests coming soon">
+          <RefreshCcw className="w-5 h-5" /> New Refill Request
+        </Button>
+      </div>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {mockPrescriptions.map((rx, i) => (
+          <motion.div
+            key={rx.id}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 * i, duration: 0.4, type: 'spring' }}
+          >
+            <Card className="border-blue-100 transition-shadow hover:shadow-xl">
+              <CardHeader className="flex flex-row items-center gap-2 pb-2">
+                <Pill className="w-7 h-7 text-blue-500" />
+                <CardTitle className="text-blue-900 text-lg font-semibold" style={{ fontFamily: 'Roboto, sans-serif' }}>{rx.name}</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-slate-600 text-sm mb-2">
+                  <span className="font-medium">Provider:</span> {rx.provider}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-bold text-blue-900 text-lg">{rx.name}</div>
-                  <div className="text-sm text-slate-500 mb-1">{rx.instructions}</div>
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded-full">
-                      {rx.status}
+                <div className="flex gap-4 text-xs text-slate-500 mb-3">
+                  <span>
+                    <span className="font-medium">Issued:</span> {rx.dateIssued}
+                  </span>
+                  <span>
+                    <span className="font-medium">Refills left:</span> {rx.refillsLeft}
+                  </span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  {rx.status === 'active' ? (
+                    <Button id={`refill-${rx.id}`} variant="secondary" className="flex items-center gap-1" disabled={rx.refillsLeft === 0} title={rx.refillsLeft === 0 ? 'No refills left' : 'Request refill (demo)'}>
+                      <RefreshCcw className="w-4 h-4" /> Request Refill
+                    </Button>
+                  ) : (
+                    <span className="flex items-center gap-1 text-slate-400 text-xs">
+                      <CheckCircle2 className="w-4 h-4" /> Expired
                     </span>
-                    <span className="text-slate-500">Refills left: {rx.refills}</span>
-                    <span className="text-slate-400">Last filled: {rx.lastFilled}</span>
-                  </div>
+                  )}
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    id={`rx-refill-${rx.id}`}
-                    variant={rx.refills === 0 ? 'default' : 'outline'}
-                    disabled={rx.refills === 0}
-                    className="gap-1"
-                  >
-                    <RefreshCcw className="w-4 h-4" /> Request Refill
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   );
 }

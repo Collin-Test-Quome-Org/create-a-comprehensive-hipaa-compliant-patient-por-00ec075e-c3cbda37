@@ -1,55 +1,69 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Bell, CalendarCheck, FileText } from 'lucide-react';
+import { Bell, CalendarCheck2, FileText, FlaskConical } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { motion } from 'framer-motion';
+
 const mockNotifications = [
   {
-    id: 'n-1',
-    type: 'Appointment',
-    message: 'Your appointment with Dr. Hart is confirmed for June 1 at 9:00 AM.',
-    date: '2024-05-20',
-    icon: <CalendarCheck className="w-5 h-5 text-blue-700" />,
+    id: 'notif-1',
+    type: 'appointment',
+    title: 'Appointment Confirmed',
+    message: 'Your appointment with Dr. Jane Smith is confirmed for July 12 at 10:00 AM.',
+    timestamp: '2024-06-10 10:05',
+    icon: <CalendarCheck2 className="w-5 h-5 text-blue-600" />,
   },
   {
-    id: 'n-2',
-    type: 'Lab Result',
-    message: 'Your blood test results are available in Medical Records.',
-    date: '2024-05-19',
-    icon: <FileText className="w-5 h-5 text-blue-700" />,
+    id: 'notif-2',
+    type: 'lab',
+    title: 'Lab Results Ready',
+    message: 'Your CBC results are now available in Medical Records.',
+    timestamp: '2024-06-09 15:40',
+    icon: <FlaskConical className="w-5 h-5 text-green-600" />,
+  },
+  {
+    id: 'notif-3',
+    type: 'document',
+    title: 'New Document Uploaded',
+    message: 'MRI Scan report has been added to your records.',
+    timestamp: '2024-06-06 11:10',
+    icon: <FileText className="w-5 h-5 text-slate-500" />,
   },
 ];
 
 export function Notifications() {
   return (
-    <div className="container mx-auto py-10">
-      <Card className="mb-8 shadow-md">
-        <CardHeader className="flex flex-row items-center gap-2">
-          <Bell className="w-7 h-7 text-blue-700" />
-          <div>
-            <CardTitle className="font-roboto font-bold text-2xl text-blue-900">Notifications</CardTitle>
-            <CardDescription>
-              Real-time updates about your care, appointments, and test results.
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-4">
-            {mockNotifications.length === 0 && (
-              <div className="text-slate-500">You're all caught up!</div>
-            )}
-            {mockNotifications.map(n => (
-              <Card key={n.id} className="flex flex-row items-center gap-4 p-4 bg-slate-50 border-blue-100">
-                <div className="flex-shrink-0 bg-blue-100 p-2 rounded-full">
-                  {n.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-bold text-blue-900 text-base">{n.type}</div>
-                  <div className="text-sm text-slate-700">{n.message}</div>
-                  <div className="text-xs text-slate-400 mt-1">{n.date}</div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 py-12 min-h-[calc(100vh-128px)]"
+    >
+      <div className="mb-8 flex items-center gap-3">
+        <Bell className="w-7 h-7 text-blue-500" />
+        <h1 className="text-3xl md:text-4xl font-bold text-blue-900" style={{ fontFamily: 'Roboto, sans-serif' }}>
+          Notifications
+        </h1>
+      </div>
+      <div className="flex flex-col gap-4">
+        {mockNotifications.map((notif, i) => (
+          <motion.div
+            key={notif.id}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * i, duration: 0.3, type: 'spring' }}
+          >
+            <Card className="border-blue-100 flex flex-row items-center gap-3">
+              <CardHeader className="pr-3 flex items-center justify-center">
+                {notif.icon}
+              </CardHeader>
+              <CardContent className="flex-1">
+                <CardTitle className="text-blue-900 text-lg font-semibold" style={{ fontFamily: 'Roboto, sans-serif' }}>{notif.title}</CardTitle>
+                <div className="text-slate-600 text-sm mb-1">{notif.message}</div>
+                <div className="text-xs text-slate-400">{notif.timestamp}</div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   );
 }

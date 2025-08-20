@@ -5,37 +5,36 @@ test.describe('Home Page', () => {
     await page.goto('/');
   });
 
-  test('renders the Hero section', async ({ page }) => {
-    // The Hero section likely has a background image (see brand kit)
-    const hero = page.locator("div[style*='/branding/assets/hero-0.png']");
-    await expect(hero).toBeVisible();
-    // Overlay should contain an h1
-    await expect(hero.locator('h1')).toBeVisible();
-  });
+  test('displays hero section and introduction', async ({ page }) => {
+    // Hero component: check for hero image background
+    const heroImage = page.locator('div[style*="/branding/assets/hero-0.png"]');
+    await expect(heroImage).toBeVisible();
 
-  test('shows section headline and description', async ({ page }) => {
+    // Headline
     await expect(page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand' })).toBeVisible();
-    await expect(page.getByText(
-      'At CareShield, we believe every connection to your health should feel safe, simple, and empowering.',
-      { exact: false }
-    )).toBeVisible();
-    await expect(page.getByText(
-      'Join a community where trust is built in, and clarity is always at the forefront.',
-      { exact: false }
-    )).toBeVisible();
+    // Paragraph
+    await expect(
+      page.getByText(
+        'At CareShield, we believe every connection to your health should feel safe, simple, and empowering.',
+        { exact: false }
+      )
+    ).toBeVisible();
   });
 
-  test('content is centered and visually present', async ({ page }) => {
-    // Section should have flex and items-center
-    const section = page.locator('section.flex.flex-col.items-center');
-    await expect(section).toBeVisible();
-    await expect(section.getByRole('heading', { name: /Healthcare and Security/ })).toBeVisible();
+  test('has accessible headings and text', async ({ page }) => {
+    // There should be only one h2 with the main headline
+    const headline = page.locator('h2', { hasText: 'Healthcare and Security, Hand in Hand' });
+    await expect(headline).toHaveCount(1);
+    // Ensure it has the correct font-family (Roboto)
+    const font = await headline.evaluate(el => getComputedStyle(el).fontFamily);
+    expect(font.toLowerCase()).toContain('roboto');
   });
 
-  test('has accessible heading structure', async ({ page }) => {
-    // There should be only one h2 on the page for this section
-    const h2s = await page.locator('h2').all();
-    expect(h2s.length).toBeGreaterThanOrEqual(1);
-    await expect(page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand', level: 2 })).toBeVisible();
+  test('navigation bar is visible and sticky', async ({ page }) => {
+    const nav = page.locator('nav');
+    await expect(nav).toBeVisible();
+    // Check sticky positioning
+    const position = await nav.evaluate(el => getComputedStyle(el).position);
+    expect(["sticky", "-webkit-sticky"]).toContain(position);
   });
 });

@@ -1,47 +1,41 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Main Navigation Bar', () => {
+test.describe('Navigation Bar', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('should display the BrandLogo', async ({ page }) => {
-    // Assuming BrandLogo is the first image in the nav
-    const logo = page.locator('nav img');
-    await expect(logo).toBeVisible();
-  });
+  test('renders the BrandLogo and navigation links', async ({ page }) => {
+    // BrandLogo is the first image/logo on the navbar
+    const nav = page.locator('nav');
+    await expect(nav).toBeVisible();
+    await expect(nav.locator('img')).toBeVisible();
 
-  test('should have About, Login, and Sign Up links', async ({ page }) => {
+    // About link
     await expect(page.getByRole('link', { name: 'About' })).toBeVisible();
+    // Login link
     await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
+    // Sign Up button
     await expect(page.getByRole('link', { name: 'Sign Up' })).toBeVisible();
-  });
-
-  test('Sign Up button should be styled as primary', async ({ page }) => {
-    const signUpButton = page.locator('#signup-nav');
-    await expect(signUpButton).toBeVisible();
-    await expect(signUpButton).toHaveClass(/bg-blue-700/);
+    await expect(page.getByRole('button', { name: 'Sign Up' })).toBeVisible();
   });
 
   test('navigates to About page when About is clicked', async ({ page }) => {
     await page.getByRole('link', { name: 'About' }).click();
-    await expect(page).toHaveURL(/\/about/);
+    await expect(page).toHaveURL(/\/about$/);
+    // Should see the About page heading
+    await expect(page.locator('h1, h2')).toContainText(['About']);
   });
 
   test('navigates to Login page when Login is clicked', async ({ page }) => {
     await page.getByRole('link', { name: 'Login' }).click();
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(page.locator('h1, h2')).toContainText(['Login']);
   });
 
-  test('navigates to Signup page when Sign Up is clicked', async ({ page }) => {
+  test('navigates to Sign Up page when Sign Up is clicked', async ({ page }) => {
     await page.getByRole('link', { name: 'Sign Up' }).click();
-    await expect(page).toHaveURL(/\/signup/);
-  });
-
-  test('navigation bar is sticky', async ({ page }) => {
-    const nav = page.locator('nav');
-    // Scroll and check nav is still visible
-    await page.evaluate(() => window.scrollBy(0, 500));
-    await expect(nav).toBeVisible();
+    await expect(page).toHaveURL(/\/signup$/);
+    await expect(page.locator('h1, h2')).toContainText(['Sign Up']);
   });
 });

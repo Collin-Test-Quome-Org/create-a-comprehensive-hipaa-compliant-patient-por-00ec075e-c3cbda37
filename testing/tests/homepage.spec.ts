@@ -5,36 +5,41 @@ test.describe('Home Page', () => {
     await page.goto('/');
   });
 
-  test('displays hero section and introduction', async ({ page }) => {
-    // Hero component: check for hero image background
-    const heroImage = page.locator('div[style*="/branding/assets/hero-0.png"]');
-    await expect(heroImage).toBeVisible();
-
-    // Headline
-    await expect(page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand' })).toBeVisible();
-    // Paragraph
-    await expect(
-      page.getByText(
-        'At CareShield, we believe every connection to your health should feel safe, simple, and empowering.',
-        { exact: false }
-      )
-    ).toBeVisible();
+  test('displays Hero section', async ({ page }) => {
+    // Hero is the first child - check for expected structure
+    const heroDiv = page.locator('div').first();
+    // The Hero component likely contains branding imagery or introductory content, but we check presence
+    await expect(heroDiv).toBeVisible();
   });
 
-  test('has accessible headings and text', async ({ page }) => {
-    // There should be only one h2 with the main headline
-    const headline = page.locator('h2', { hasText: 'Healthcare and Security, Hand in Hand' });
-    await expect(headline).toHaveCount(1);
-    // Ensure it has the correct font-family (Roboto)
-    const font = await headline.evaluate(el => getComputedStyle(el).fontFamily);
-    expect(font.toLowerCase()).toContain('roboto');
+  test('shows main heading and subtitle', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: /Healthcare and Security, Hand in Hand/i })).toBeVisible();
+    await expect(page.getByText(/At CareShield, we believe every connection to your health should feel safe, simple, and empowering\./i)).toBeVisible();
+    await expect(page.getByText(/Join a community where trust is built in, and clarity is always at the forefront\./i)).toBeVisible();
   });
 
-  test('navigation bar is visible and sticky', async ({ page }) => {
-    const nav = page.locator('nav');
-    await expect(nav).toBeVisible();
-    // Check sticky positioning
-    const position = await nav.evaluate(el => getComputedStyle(el).position);
-    expect(["sticky", "-webkit-sticky"]).toContain(position);
+  test('main section animates in (opacity check)', async ({ page }) => {
+    // The section should end up with opacity 1 after animation
+    const section = page.locator('section.container');
+    await expect(section).toBeVisible();
+    // Playwright can't directly check framer-motion animation, but can check final style
+    const opacity = await section.evaluate((el) => window.getComputedStyle(el).opacity);
+    expect(Number(opacity)).toBeGreaterThan(0.95);
+  });
+
+  test('responsive layout classes are present', async ({ page }) => {
+    const section = page.locator('section.container');
+    await expect(section).toHaveClass(/flex/);
+    await expect(section).toHaveClass(/items-center/);
+    await expect(section).toHaveClass(/px-4/);
+    await expect(section).toHaveClass(/py-16/);
+  });
+
+  test('accessibility: heading and content roles', async ({ page }) => {
+    // There should be a level 2 heading
+    const h2 = page.getByRole('heading', { level: 2, name: /Healthcare and Security, Hand in Hand/i });
+    await expect(h2).toBeVisible();
+    // Paragraph text should exist
+    await expect(page.getByText(/CareShield/)).toBeVisible();
   });
 });

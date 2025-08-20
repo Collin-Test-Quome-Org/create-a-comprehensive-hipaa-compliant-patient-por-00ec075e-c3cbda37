@@ -1,77 +1,108 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
-import { Calendar, User, CheckCircle2, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar, Plus, CheckCircle2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
+// Mock appointments
 const mockAppointments = [
   {
     id: 'appt-1',
-    provider: 'Dr. Harper Lee',
-    type: 'Telehealth',
-    date: '2024-06-12',
-    time: '11:00 AM',
+    date: '2024-07-12',
+    time: '9:30 AM',
+    type: 'Primary Care',
+    provider: 'Dr. Amy Carter',
     status: 'Confirmed',
   },
   {
     id: 'appt-2',
-    provider: 'Dr. Amir Patel',
-    type: 'In-person',
-    date: '2024-06-21',
-    time: '2:30 PM',
-    status: 'Requested',
+    date: '2024-06-20',
+    time: '2:00 PM',
+    type: 'Dermatology',
+    provider: 'Dr. Lee Tran',
+    status: 'Upcoming',
+  },
+  {
+    id: 'appt-3',
+    date: '2024-05-05',
+    time: '11:00 AM',
+    type: 'Lab Work',
+    provider: 'Lab Department',
+    status: 'Completed',
   },
 ];
 
 export function Appointments() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  setTimeout(() => setIsLoaded(true), 200);
+  const [canceledId, setCanceledId] = useState<string | null>(null);
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 24 }}
-      animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-      className="container mx-auto px-4 py-12 min-h-[calc(100vh-80px)]"
+    <motion.div
+      className="container mx-auto py-10 px-4"
+      initial={{ opacity: 0, y: 32 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="flex items-center gap-3 mb-4">
-        <Calendar className="text-blue-700" />
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900" style={{ fontFamily: 'Roboto, sans-serif' }}>
-          Your Appointments
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl md:text-4xl font-bold text-blue-900" style={{ fontFamily: 'Roboto, sans-serif' }}>
+          Appointments
         </h1>
+        <Button id="new-appointment-btn" className="bg-blue-700 text-white hover:bg-blue-900 flex gap-1" size="sm">
+          <Plus className="w-4 h-4" /> Schedule
+        </Button>
       </div>
-      <p className="text-slate-600 mb-8" style={{ fontFamily: 'Roboto, sans-serif' }}>
-        Schedule, manage, and review your appointments securely. Video visits and in-person options available.
-      </p>
-      <Button asChild id="schedule-appt-btn" className="mb-6 bg-blue-700 text-white hover:bg-blue-900">
-        <Link to="/appointments/new">+ Schedule New Appointment</Link>
-      </Button>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mockAppointments.map((appt) => (
-          <Card key={appt.id} className="hover:shadow-lg transition-shadow group">
-            <CardHeader className="flex flex-row items-center gap-2 justify-between">
-              <CardTitle className="text-blue-900 flex gap-2 items-center">
-                <User className="w-5 h-5 text-blue-700" /> {appt.provider}
-              </CardTitle>
-              <span className="text-xs text-slate-400">{appt.date} @ {appt.time}</span>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="font-semibold text-slate-700">{appt.type}</span>
-                {appt.status === 'Confirmed' ? (
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
-                ) : (
-                  <XCircle className="w-4 h-4 text-yellow-500" />
+          <motion.div key={appt.id} whileHover={{ scale: 1.025 }}>
+            <Card className="h-full border-blue-100 shadow-sm">
+              <CardHeader className="flex flex-row items-center gap-3 pb-2">
+                <Calendar className="text-blue-600 mr-2" />
+                <CardTitle className="text-lg font-semibold text-blue-900">
+                  {appt.type}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-slate-700 mb-1 text-sm">
+                  {appt.provider}
+                </div>
+                <div className="text-xs text-slate-500 mb-1">
+                  {appt.date} &bull; {appt.time}
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  {appt.status === 'Confirmed' && (
+                    <span className="flex items-center text-green-600 text-xs font-semibold"><CheckCircle2 className="w-4 h-4 mr-1" /> Confirmed</span>
+                  )}
+                  {appt.status === 'Upcoming' && (
+                    <span className="flex items-center text-blue-600 text-xs font-semibold"><Calendar className="w-4 h-4 mr-1" /> Upcoming</span>
+                  )}
+                  {appt.status === 'Completed' && (
+                    <span className="flex items-center text-slate-500 text-xs font-semibold"><CheckCircle2 className="w-4 h-4 mr-1" /> Completed</span>
+                  )}
+                </div>
+                {appt.status !== 'Completed' && !canceledId && (
+                  <Button
+                    id={`cancel-appointment-${appt.id}`}
+                    variant="destructive"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => setCanceledId(appt.id)}
+                  >
+                    <XCircle className="w-4 h-4 mr-1" /> Cancel
+                  </Button>
                 )}
-                <span className="text-xs text-slate-500">{appt.status}</span>
-              </div>
-              <Button asChild id={`appt-view-${appt.id}`} variant="outline" className="w-full group-hover:bg-blue-50">
-                <Link to={`/appointments/${appt.id}`}>View Details</Link>
-              </Button>
-            </CardContent>
-          </Card>
+                {canceledId === appt.id && (
+                  <motion.div
+                    className="mt-4 text-xs text-red-600"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    Appointment canceled (demo only).<br />A secure notification will be sent to your care team.
+                  </motion.div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </div>
-    </motion.section>
+    </motion.div>
   );
 }

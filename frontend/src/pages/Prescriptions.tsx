@@ -1,103 +1,73 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Pill, RefreshCcw, CheckCircle2, Clock } from 'lucide-react';
-import { useState } from 'react';
+import { Pill, Repeat } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const mockPrescriptions = [
   {
-    id: 'rx-1',
-    name: 'Atorvastatin',
-    dosage: '20mg',
-    instructions: 'Take 1 tablet daily',
-    status: 'Active',
-    lastFilled: '2024-04-10',
-    refills: 2,
+    id: 'rx-001',
+    medication: 'Lisinopril',
+    dosage: '10mg daily',
+    provider: 'Dr. Marquez',
+    lastFilled: '2024-05-30',
+    refillAvailable: true,
   },
   {
-    id: 'rx-2',
-    name: 'Metformin',
-    dosage: '500mg',
-    instructions: 'Twice daily with food',
-    status: 'Refill Requested',
-    lastFilled: '2024-03-02',
-    refills: 0,
-  },
-  {
-    id: 'rx-3',
-    name: 'Lisinopril',
-    dosage: '10mg',
-    instructions: 'Take 1 tablet every morning',
-    status: 'Completed',
-    lastFilled: '2023-12-20',
-    refills: 0,
+    id: 'rx-002',
+    medication: 'Metformin',
+    dosage: '500mg twice daily',
+    provider: 'Dr. Choi',
+    lastFilled: '2024-05-15',
+    refillAvailable: false,
   },
 ];
 
 export function Prescriptions() {
-  const [requested, setRequested] = useState<string | null>(null);
-
   return (
     <motion.div
-      className="container mx-auto py-10 px-4"
-      initial={{ opacity: 0, y: 32 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 py-8"
     >
-      <h1 className="text-3xl md:text-4xl font-bold text-blue-900 mb-6" style={{ fontFamily: 'Roboto, sans-serif' }}>
-        Prescriptions
-      </h1>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-900">
+            <Pill className="text-blue-700" />
+            My Prescriptions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription className="text-slate-600">Track your medications, request refills, and stay up to date on your prescription history.</CardDescription>
+        </CardContent>
+      </Card>
+      <div className="grid md:grid-cols-2 gap-6">
         {mockPrescriptions.map((rx) => (
-          <motion.div key={rx.id} whileHover={{ scale: 1.025 }}>
-            <Card className="h-full border-blue-100 shadow-sm">
-              <CardHeader className="flex flex-row items-center gap-3 pb-2">
-                <Pill className="text-blue-600 mr-2" />
-                <CardTitle className="text-lg font-semibold text-blue-900">
-                  {rx.name}
-                </CardTitle>
+          <motion.div
+            key={rx.id}
+            whileHover={{ scale: 1.025, boxShadow: '0 4px 18px rgba(29,78,216,0.10)' }}
+          >
+            <Card className="relative border-blue-200">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Pill className="text-blue-700" />
+                  <span className="font-semibold text-blue-900">{rx.medication}</span>
+                  <span className="ml-auto text-xs text-slate-500">{rx.dosage}</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Prescribed by {rx.provider}</p>
               </CardHeader>
               <CardContent>
-                <div className="text-slate-700 mb-1 text-sm">
-                  {rx.dosage} &bull; {rx.instructions}
-                </div>
-                <div className="text-xs text-slate-500 mb-1">
-                  Last filled: {rx.lastFilled}
-                </div>
-                <div className="mt-2 flex items-center gap-2">
-                  {rx.status === 'Active' && (
-                    <span className="flex items-center text-green-600 text-xs font-semibold"><CheckCircle2 className="w-4 h-4 mr-1" /> Active</span>
-                  )}
-                  {rx.status === 'Refill Requested' && (
-                    <span className="flex items-center text-blue-600 text-xs font-semibold"><Clock className="w-4 h-4 mr-1" /> Pending Refill</span>
-                  )}
-                  {rx.status === 'Completed' && (
-                    <span className="flex items-center text-slate-500 text-xs font-semibold"><CheckCircle2 className="w-4 h-4 mr-1" /> Completed</span>
-                  )}
-                </div>
-                {rx.status === 'Active' && !requested && rx.refills > 0 && (
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-sm text-slate-600">Last filled: {rx.lastFilled}</span>
                   <Button
-                    id={`request-refill-${rx.id}`}
-                    variant="secondary"
+                    variant={rx.refillAvailable ? 'default' : 'outline'}
                     size="sm"
-                    className="mt-4"
-                    onClick={() => setRequested(rx.id)}
+                    id={`refill-rx-${rx.id}`}
+                    disabled={!rx.refillAvailable}
+                    onClick={() => alert('Refill request coming soon!')}
                   >
-                    <RefreshCcw className="w-4 h-4 mr-1" /> Request Refill
+                    <Repeat className="mr-1 h-4 w-4" /> Refill
                   </Button>
-                )}
-                {requested === rx.id && (
-                  <motion.div
-                    className="mt-4 text-xs text-blue-600"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    Refill requested. Your provider's office will notify you when ready.
-                  </motion.div>
-                )}
-                {rx.refills === 0 && (
-                  <div className="text-xs text-slate-400 mt-2">No refills remaining. Contact provider.</div>
-                )}
+                </div>
               </CardContent>
             </Card>
           </motion.div>

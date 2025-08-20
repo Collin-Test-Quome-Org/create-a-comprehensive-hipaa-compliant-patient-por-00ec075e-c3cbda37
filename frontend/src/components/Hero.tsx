@@ -1,30 +1,55 @@
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 
-export const Hero = () => (
-  <section className="relative w-full min-h-[26rem] flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('/branding/assets/hero-0.png')" }}>
-    <div className="absolute inset-0 bg-black bg-opacity-40 z-10" />
-    <motion.div 
-      className="relative z-20 flex flex-col items-center max-w-3xl mx-auto text-center"
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-    >
-      <h1 className="text-white text-5xl font-bold mb-4 tracking-tight" style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 700 }}>
-        Welcome to SentinelHealth Portal
-      </h1>
-      <p className="text-slate-200 text-lg mb-6 max-w-xl" style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 400 }}>
-        Securely connect with your care. Effortlessly access medical records, schedule appointments, and stay in control of your health journey—all with SentinelHealth's trusted protection.
-      </p>
-      <div className="flex gap-4 justify-center">
-        <Button asChild id="cta-get-started" className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 text-lg rounded-full shadow-lg">
-          <Link to="/signup">Get Started</Link>
-        </Button>
-        <Button asChild variant="secondary" id="cta-learn-more" className="bg-slate-200 hover:bg-slate-300 text-blue-900 px-8 py-3 text-lg rounded-full">
-          <Link to="/login">Log In</Link>
-        </Button>
+const heroBg = '/branding/assets/hero-0.png';
+
+export function Hero() {
+  return (
+    <section className="relative w-full h-96 mb-12">
+      <div
+        style={{ backgroundImage: `url('${heroBg}')` }}
+        className="bg-cover bg-center h-full w-full absolute inset-0 z-0"
+      />
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-10">
+        <motion.h1
+          className="text-white text-4xl md:text-5xl font-bold mb-4 font-['Roboto']"
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.7 }}
+        >
+          Welcome to Medivault
+        </motion.h1>
+        <motion.p
+          className="text-slate-100 text-lg md:text-xl max-w-xl text-center mb-8 font-['Roboto']"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+        >
+          Your secure, seamless vault for digital health. Effortlessly manage records, appointments, and care—all in one protected place.
+        </motion.p>
+        <motion.div
+          className="flex gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.6 }}
+        >
+          <a href="/signup">
+            <button
+              id="hero-signup"
+              className="bg-blue-700 hover:bg-blue-800 transition text-white font-bold py-2 px-6 rounded shadow-md text-lg"
+            >
+              Get Started
+            </button>
+          </a>
+          <a href="/login">
+            <button
+              id="hero-login"
+              className="bg-slate-200 hover:bg-slate-300 transition text-blue-900 font-semibold py-2 px-6 rounded shadow text-lg"
+            >
+              Login
+            </button>
+          </a>
+        </motion.div>
       </div>
-    </motion.div>
-  </section>
-);
+    </section>
+  );
+}

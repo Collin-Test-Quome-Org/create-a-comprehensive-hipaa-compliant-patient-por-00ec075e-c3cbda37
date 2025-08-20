@@ -1,72 +1,56 @@
 import { test, expect } from '@playwright/test';
 
-// Navigation menu tests
+// Helper to match navigation links by their visible text
+const navLinks = [
+  { label: 'Medivault', path: '/' },
+  { label: 'Appointments', path: '/appointments' },
+  { label: 'Medical Records', path: '/medical-records' },
+  { label: 'Prescriptions', path: '/prescriptions' },
+  { label: 'Messaging', path: '/messaging' },
+  { label: 'Notifications', path: '/notifications' },
+];
 
 test.describe('Navigation Bar', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('displays logo and app name', async ({ page }) => {
-    // Logo img
-    await expect(page.locator('nav img[src="/branding/assets/logo-0.png"]')).toBeVisible();
-    // App name text
-    await expect(page.getByText('Medivault', { exact: true })).toBeVisible();
+  test('displays site logo and title', async ({ page }) => {
+    const logoImg = page.locator('nav img[src="/branding/assets/logo-0.png"]');
+    await expect(logoImg).toBeVisible();
+    await expect(page.getByRole('link', { name: /Medivault/ })).toBeVisible();
   });
 
-  test('shows all primary navigation links', async ({ page }) => {
-    const navLinks = [
-      { text: 'Appointments', href: '/appointments' },
-      { text: 'Medical Records', href: '/medical-records' },
-      { text: 'Prescriptions', href: '/prescriptions' },
-      { text: 'Messaging', href: '/messaging' },
-      { text: 'Notifications', href: '/notifications' }
-    ];
-    for (const link of navLinks) {
-      const locator = page.getByRole('link', { name: link.text });
-      await expect(locator).toBeVisible();
-      await expect(locator).toHaveAttribute('href', link.href);
-    }
+  for (const { label, path } of navLinks) {
+    test(`navigation link "${label}" navigates to ${path}`, async ({ page }) => {
+      const link = page.getByRole('link', { name: new RegExp(label) });
+      await expect(link).toBeVisible();
+      await link.click();
+      // Confirm navigation
+      await expect(page).toHaveURL((url) => url.pathname === path);
+    });
+  }
+
+  test('Login and Sign Up buttons are visible and navigate', async ({ page }) => {
+    const loginBtn = page.locator('#nav-login');
+    const signupBtn = page.locator('#nav-signup');
+    await expect(loginBtn).toBeVisible();
+    await expect(signupBtn).toBeVisible();
+
+    // Test Login navigation
+    await loginBtn.click();
+    await expect(page).toHaveURL((url) => url.pathname === '/login');
+
+    // Go back to home
+    await page.goto('/');
+    // Test Sign Up navigation
+    await signupBtn.click();
+    await expect(page).toHaveURL((url) => url.pathname === '/signup');
   });
 
-  test('shows Login and Sign Up buttons', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Sign Up' })).toBeVisible();
-  });
-
-  test('navigates to Login page when clicking Login button', async ({ page }) => {
-    await page.getByRole('link', { name: 'Login' }).click();
-    await expect(page).toHaveURL(/\/login$/);
-  });
-
-  test('navigates to Sign Up page when clicking Sign Up button', async ({ page }) => {
-    await page.getByRole('button', { name: 'Sign Up' }).click();
-    await expect(page).toHaveURL(/\/signup$/);
-  });
-
-  test('navigation links route to correct pages', async ({ page }) => {
-    const navLinks = [
-      { text: 'Appointments', href: '/appointments' },
-      { text: 'Medical Records', href: '/medical-records' },
-      { text: 'Prescriptions', href: '/prescriptions' },
-      { text: 'Messaging', href: '/messaging' },
-      { text: 'Notifications', href: '/notifications' }
-    ];
-    for (const link of navLinks) {
-      await page.getByRole('link', { name: link.text }).click();
-      await expect(page).toHaveURL(new RegExp(link.href.replace('/', '\\/') + '$'));
-      await page.goBack();
-    }
-  });
-
-  test('logo and app name navigate to home', async ({ page }) => {
-    await page.getByText('Medivault', { exact: true }).click();
-    await expect(page).toHaveURL('/');
-  });
-
-  test('navigation bar is sticky and visible after scroll', async ({ page }) => {
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    const nav = page.locator('nav.w-full.bg-white.shadow-md');
+  test('navigation bar is sticky at the top', async ({ page }) => {
+    const nav = page.locator('nav');
+    await expect(nav).toHaveClass(/sticky/);
     await expect(nav).toBeVisible();
   });
 });

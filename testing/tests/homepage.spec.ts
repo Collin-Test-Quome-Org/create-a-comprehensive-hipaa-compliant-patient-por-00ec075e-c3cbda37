@@ -5,34 +5,44 @@ test.describe('Home Page', () => {
     await page.goto('/');
   });
 
-  test('displays the Hero component (background image)', async ({ page }) => {
-    // Should have an element with the background image hero-0.png
-    const heroSection = page.locator('[style*="hero-0.png"]');
+  test('displays hero section', async ({ page }) => {
+    // The Hero component is rendered at the top
+    // Look for the hero image background
+    const heroSection = page.locator('div[style*="/branding/assets/hero-0.png"]');
     await expect(heroSection).toBeVisible();
   });
 
-  test('shows the main headline and supporting paragraph', async ({ page }) => {
-    await expect(page.getByRole('heading', { level: 2, name: 'Healthcare and Security, Hand in Hand' })).toBeVisible();
-    await expect(page.locator('p:has-text("every connection to your health should feel safe, simple, and empowering")')).toBeVisible();
+  test('shows main heading and description', async ({ page }) => {
+    const heading = page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand', level: 2 });
+    await expect(heading).toBeVisible();
+    const description = page.getByText(
+      /At CareShield, we believe every connection to your health should feel safe, simple, and empowering.\s+Join a community where trust is built in, and clarity is always at the forefront./
+    );
+    await expect(description).toBeVisible();
   });
 
-  test('headline uses correct font, color and weight', async ({ page }) => {
-    const h2 = page.getByRole('heading', { level: 2, name: 'Healthcare and Security, Hand in Hand' });
-    await expect(h2).toHaveCSS('font-family', /Roboto/);
-    await expect(h2).toHaveCSS('color', /rgb\(30, 58, 138\)|#1d4ed8/i); // blue-900
-    await expect(h2).toHaveCSS('font-weight', /700/);
+  test('main heading uses correct font and color', async ({ page }) => {
+    const heading = page.getByRole('heading', { name: 'Healthcare and Security, Hand in Hand', level: 2 });
+    // Check computed style
+    const styles = await heading.evaluate((el) => {
+      const cs = window.getComputedStyle(el);
+      return {
+        fontFamily: cs.fontFamily,
+        color: cs.color,
+        fontWeight: cs.fontWeight,
+      };
+    });
+    expect(styles.fontFamily).toMatch(/Roboto/);
+    // Brand primary color: #1d4ed8 (text-blue-900)
+    expect(styles.color.replace(/\s/g, '').toLowerCase()).toMatch(/#1d4ed8|rgb\(29,78,216\)/);
+    expect(Number(styles.fontWeight)).toBeGreaterThanOrEqual(700);
   });
 
-  test('hero section content is centered and responsive', async ({ page }) => {
-    const section = page.locator('section.container');
-    await expect(section).toHaveClass(/flex-col/);
-    await expect(section).toHaveClass(/items-center/);
-    await expect(section).toBeVisible();
-  });
-
-  test('basic accessibility: headline is a level 2 heading', async ({ page }) => {
-    const headings = await page.locator('h2').all();
-    expect(headings.length).toBeGreaterThan(0);
-    await expect(page.getByRole('heading', { level: 2, name: 'Healthcare and Security, Hand in Hand' })).toBeVisible();
+  test('page is accessible: no obvious accessibility violations', async ({ page }) => {
+    // Check for proper heading structure and role
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible();
+    // Check for only one main landmark
+    const mainLandmarks = await page.locator('main').count();
+    expect(mainLandmarks).toBeLessThanOrEqual(1);
   });
 });

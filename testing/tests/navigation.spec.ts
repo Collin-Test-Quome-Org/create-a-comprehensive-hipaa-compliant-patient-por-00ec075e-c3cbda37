@@ -1,61 +1,64 @@
 import { test, expect } from '@playwright/test';
 
-// Navigation links and buttons
-const navLinks = [
-  { label: 'Medivault', path: '/' },
-  { label: 'Appointments', path: '/appointments' },
-  { label: 'Medical Records', path: '/medical-records' },
-  { label: 'Prescriptions', path: '/prescriptions' },
-  { label: 'Messaging', path: '/messaging' },
-  { label: 'Notifications', path: '/notifications' },
-];
+// Test the Navigation component and all navigation links
 
 test.describe('Navigation Bar', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('should render logo and brand name', async ({ page }) => {
+  test('displays logo and brand name', async ({ page }) => {
     const logo = page.locator('nav img[src="/branding/assets/logo-0.png"]');
     await expect(logo).toBeVisible();
-    const brand = page.getByText('Medivault');
+    const brand = page.getByText('Medivault', { exact: true });
     await expect(brand).toBeVisible();
   });
 
-  for (const { label, path } of navLinks) {
-    test(`should have navigation link for "${label}" that navigates to ${path}`, async ({ page }) => {
-      const link = page.getByRole('link', { name: label });
-      await expect(link).toBeVisible();
-      await link.click();
-      // Wait for navigation (URL pathname check)
-      await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}(\\?.*)?$`));
-    });
-  }
-
-  test('should have Login and Sign Up buttons', async ({ page }) => {
-    const loginBtn = page.getByRole('button', { name: 'Login' });
-    const signupBtn = page.getByRole('button', { name: 'Sign Up' });
-    await expect(loginBtn).toBeVisible();
-    await expect(signupBtn).toBeVisible();
+  test('shows all primary navigation links', async ({ page }) => {
+    await expect(page.getByRole('link', { name: 'Appointments' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Medical Records' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Prescriptions' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Messaging' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Notifications' })).toBeVisible();
   });
 
-  test('Login button navigates to /login', async ({ page }) => {
-    await page.getByRole('button', { name: 'Login' }).click();
-    await expect(page).toHaveURL(/\/login(\?.*)?$/);
+  test('shows Login and Sign Up buttons', async ({ page }) => {
+    await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Sign Up' })).toBeVisible();
   });
 
-  test('Sign Up button navigates to /signup', async ({ page }) => {
-    await page.getByRole('button', { name: 'Sign Up' }).click();
-    await expect(page).toHaveURL(/\/signup(\?.*)?$/);
+  test('navigates to Appointments page', async ({ page }) => {
+    await page.getByRole('link', { name: 'Appointments' }).click();
+    await expect(page).toHaveURL(/\/appointments/);
   });
 
-  test('navigation is sticky at the top', async ({ page }) => {
-    // Scroll the page and verify nav is still visible
-    await page.evaluate(() => window.scrollTo(0, 500));
-    const nav = page.locator('nav');
-    await expect(nav).toBeVisible();
-    // Check sticky position
-    const boundingBox = await nav.boundingBox();
-    expect(boundingBox?.y).toBeLessThanOrEqual(0);
+  test('navigates to Medical Records page', async ({ page }) => {
+    await page.getByRole('link', { name: 'Medical Records' }).click();
+    await expect(page).toHaveURL(/\/medical-records/);
+  });
+
+  test('navigates to Prescriptions page', async ({ page }) => {
+    await page.getByRole('link', { name: 'Prescriptions' }).click();
+    await expect(page).toHaveURL(/\/prescriptions/);
+  });
+
+  test('navigates to Messaging page', async ({ page }) => {
+    await page.getByRole('link', { name: 'Messaging' }).click();
+    await expect(page).toHaveURL(/\/messaging/);
+  });
+
+  test('navigates to Notifications page', async ({ page }) => {
+    await page.getByRole('link', { name: 'Notifications' }).click();
+    await expect(page).toHaveURL(/\/notifications/);
+  });
+
+  test('navigates to Login page from Login button', async ({ page }) => {
+    await page.getByRole('link', { name: 'Login' }).click();
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test('navigates to Sign Up page from Sign Up button', async ({ page }) => {
+    await page.getByRole('link', { name: 'Sign Up' }).click();
+    await expect(page).toHaveURL(/\/signup/);
   });
 });

@@ -3,28 +3,31 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export const Hero = () => (
-  <section className="relative bg-cover bg-center h-96 w-full" style={{ backgroundImage: "url('/branding/assets/hero-0.png')" }}>
-    <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, y: 32 }}
+export function Hero() {
+  return (
+    <section className="relative h-[32rem] flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('/branding/assets/hero-0.png')" }}>
+      <div className="absolute inset-0 bg-black bg-opacity-50 z-10" />
+      <motion.div 
+        className="relative z-20 text-center flex flex-col items-center"
+        initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="text-center max-w-2xl"
+        transition={{ duration: 0.8 }}
       >
-        <h1 className="text-white text-4xl md:text-5xl font-bold mb-4 font-[Roboto] tracking-tight drop-shadow-lg">
-          Welcome to Medivault: Your Health, United and Secure
+        <h1 className="text-white text-5xl font-bold font-['Roboto'] mb-6 drop-shadow-xl">
+          Welcome to SecureBridge Health
         </h1>
-        <p className="text-slate-100 text-lg md:text-xl mb-6 font-[Roboto] font-normal">
-          Experience the most trusted, user-friendly portal for all your healthcare records, appointments, and secure communications. Medivault is built for peace of mind—by people who care about your care.
+        <p className="text-slate-200 text-lg max-w-xl mx-auto mb-8 font-['Roboto']">
+          The gateway to your health, securely connected. Manage appointments, records, prescriptions, and more—all with confidence and care.
         </p>
-        <Button asChild id="cta-get-started" className="px-8 py-4 text-lg">
-          <Link to="/signup" className="flex items-center gap-2">
-            Get Started
-            <ArrowRight size={20} />
-          </Link>
-        </Button>
+        <div className="flex gap-4">
+          <Button asChild id="get-started-cta" className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 text-lg font-bold">
+            <Link to="/signup" className="flex items-center gap-2">Get Started <ArrowRight className="w-5 h-5" /></Link>
+          </Button>
+          <Button asChild variant="outline" id="learn-more-cta" className="text-white border-white border-2 px-8 py-3 text-lg font-bold bg-transparent hover:bg-slate-700/30">
+            <Link to="/login">Login</Link>
+          </Button>
+        </div>
       </motion.div>
-    </div>
-  </section>
-);
+    </section>
+  );
+}

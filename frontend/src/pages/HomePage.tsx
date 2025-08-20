@@ -1,25 +1,26 @@
 import { Hero } from '@/components/Hero';
-import { DashboardCards } from '@/components/DashboardCards';
+import { FeatureCards } from '@/components/FeatureCards';
 import { motion } from 'framer-motion';
 
-export const HomePage = () => (
-  <>
-    <Hero />
-    <motion.section
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3, duration: 0.7 }}
-      className="max-w-6xl mx-auto px-4 md:px-8 mt-[-4rem] z-10 relative"
-    >
-      <div className="rounded-2xl bg-white shadow-xl p-8">
-        <h2 className="font-[Roboto] font-bold text-2xl md:text-3xl mb-4 text-slate-900">
-          Medivault: Your Central Health Command
-        </h2>
-        <p className="text-slate-700 font-[Roboto] mb-6">
-          Welcome to Medivault, where health meets harmony! Effortlessly manage appointments, access medical records, renew prescriptions, and securely message your care team—all in one beautifully secure, friendly portal. Built for patients who value clarity, control, and peace of mind.
+export function HomePage() {
+  return (
+    <main className="min-h-screen bg-slate-50">
+      <Hero />
+      <FeatureCards />
+      <motion.section 
+        className="max-w-3xl mx-auto text-center my-20 px-4"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+      >
+        <h2 className="text-3xl font-bold font-['Roboto'] text-blue-900 mb-4">Why SecureBridge Health?</h2>
+        <p className="text-lg text-slate-700 mb-8 font-['Roboto']">
+          At SecureBridge Health, we believe that health belongs in your hands—but protected by ours. 
+          Peace of mind meets powerful health management with our secure, caring, and friendly platform. 
+          Because you deserve clarity, confidence, and connection every step of your journey.
         </p>
-        <DashboardCards />
-      </div>
-    </motion.section>
-  </>
-);
+      </motion.section>
+    </main>
+  );
+}
